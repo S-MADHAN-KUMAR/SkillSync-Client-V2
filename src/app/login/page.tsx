@@ -1,8 +1,84 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import AuthLayout from "@/components/AuthLayout";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      // Validate inputs
+      if (!email || !password) {
+        setError("Email and password are required");
+        setLoading(false);
+        return;
+      }
+
+      // Make API call to login
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || data.message || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      setSuccess(true);
+      console.log("Login successful:", data);
+
+      // Normalize and store user info to avoid casing/column-name differences
+      if (data.data) {
+        const raw: any = data.data;
+        const normalized = {
+          id: raw.id ?? raw.ID ?? raw.userId ?? raw.userid ?? raw.user_id ?? null,
+          email: raw.email ?? raw.email_address ?? null,
+          fullName: raw.fullName ?? raw.fullname ?? raw.full_name ?? raw.name ?? "",
+          userType: raw.userType ?? raw.usertype ?? raw.user_type ?? raw.role ?? "",
+        };
+
+        // Fallback: if still missing userType, try to infer
+        if (!normalized.userType && raw.role) normalized.userType = raw.role;
+
+        localStorage.setItem("user", JSON.stringify(normalized));
+
+        // Redirect based on normalized userType
+        const redirectPath = normalized.userType === "employer" ? "/employer" : "/candidate";
+        setTimeout(() => {
+          router.push(redirectPath);
+        }, 500);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred during login");
+      setLoading(false);
+    }
+  }
+
   return (
     <AuthLayout>
       <div className="mb-10 text-center lg:text-left">
@@ -10,21 +86,39 @@ export default function LoginPage() {
         <p className="text-gray-500 font-medium">Log in to your account to continue.</p>
       </div>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        {error && (
+          <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-2xl text-sm">
+            {error}
+          </div>
+        )}
+        
+        {success && (
+          <div className="bg-green-500/20 border border-green-500 text-green-200 px-4 py-3 rounded-2xl text-sm">
+            Login successful! Redirecting...
+          </div>
+        )}
+
         <div>
           <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Email Address</label>
           <input
+            name="email"
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="george@example.com"
             type="email"
+            required
+            disabled={loading}
           />
         </div>
         <div>
           <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Password</label>
           <input
+            name="password"
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="••••••••••••"
             type="password"
+            required
+            disabled={loading}
           />
         </div>
         <div className="flex justify-end mt-1">
@@ -33,10 +127,11 @@ export default function LoginPage() {
           </Link>
         </div>
         <button
-          className="w-full bg-white text-black font-extrabold py-4 rounded-2xl mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide"
+          className="w-full bg-white text-black font-extrabold py-4 rounded-2xl mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
+          disabled={loading || success}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
       </form>
 

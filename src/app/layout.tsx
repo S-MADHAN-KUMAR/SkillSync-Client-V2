@@ -15,6 +15,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "SkillSync - Find your dream career",
   description: "Join over 10,000+ professionals and companies building the future of work.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

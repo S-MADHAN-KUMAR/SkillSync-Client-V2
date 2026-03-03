@@ -1,26 +1,62 @@
 "use client";
 
 import Sidebar from "@/components/Sidebar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function EmployerMessages() {
+interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  userType: "candidate" | "employer";
+}
+
+export default function CandidateMessages() {
+  const [user, setUser] = useState<User | null>(null);
   const [selected, setSelected] = useState(0);
+  const router = useRouter();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+    } catch {
+      router.push("/login");
+    }
+  }, [router]);
 
   const chats = [
     { id: 1, name: "Sarah Jenkins", time: "2m ago", preview: "Typing...", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U" },
-    { id: 2, name: "Marcus Johnson", time: "1h ago", preview: "We reviewed your application and have next steps.", avatar: null, initials: "MJ" },
-    { id: 3, name: "Alex Rivers", time: "4h ago", preview: "Can you share the design file?", avatar: null, initials: "AR" },
+    { id: 2, name: "Marcus Johnson", time: "1h ago", preview: "The frontend lead role is still open if you're interested.", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U" },
+    { id: 3, name: "Alex Rivers", time: "4h ago", preview: "Check out the new design system file I shared.", avatar: null, initials: "AR" },
+    { id: 4, name: "Lisa Miller", time: "Yesterday", preview: "Are we still on for the interview tomorrow?", avatar: null, initials: "LM" },
   ];
 
   const messages = [
-    { from: 'other', text: "Hey — thanks for applying. We loved your portfolio.", time: '9:10 AM' },
-    { from: 'me', text: "Wonderful — happy to discuss next steps.", time: '9:12 AM' },
+    { from: "other", text: "Hey George! I saw your recent post about the dashboard design system. I really loved the high-contrast approach you used.", time: "10:42 AM" },
+    { from: "me", text: "Thanks Sarah! I was actually inspired by some of the work your team did last quarter. Accessibility was our top priority.", time: "10:45 AM" },
+    { from: "other", text: "That's great to hear! Are you free for a quick sync later today? We're looking for someone with your expertise for our new mobile project.", time: "10:46 AM" },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen  bg-[#1a1a1a]">
       <div className="w-full  bg-white overflow-hidden flex  min-h-[100vh] ">
-        <Sidebar />
+        <Sidebar user={user} onLogout={handleLogout} />
 
         <main className="w-[420px] bg-[#f5f7f9] flex flex-col border-r border-gray-200 shrink-0">
           <div className="p-6">

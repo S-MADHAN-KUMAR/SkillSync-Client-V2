@@ -3,18 +3,67 @@
 import React, { useState } from "react";
 import AuthLayout from "@/components/AuthLayout";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [role, setRole] = useState<"candidate" | "employer">("candidate");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    // Replace with real submit logic
-    // eslint-disable-next-line no-console
-    console.log({ ...data, role });
+    setLoading(true);
+    setError("");
+    
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const name = formData.get("name") as string;
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      // Validate inputs
+      if (!name || !email || !password) {
+        setError("All fields are required");
+        setLoading(false);
+        return;
+      }
+
+      // Make API call to register
+      const response = await fetch("http://localhost:3000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: name,
+          email: email,
+          password: password,
+          userType: role,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || data.message || "Registration failed");
+        setLoading(false);
+        return;
+      }
+
+      setSuccess(true);
+      console.log("Registration successful:", data);
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred during registration");
+      setLoading(false);
+    }
   }
 
   return (
@@ -50,6 +99,18 @@ export default function RegisterPage() {
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
+        {error && (
+          <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-2xl text-sm">
+            {error}
+          </div>
+        )}
+        
+        {success && (
+          <div className="bg-green-500/20 border border-green-500 text-green-200 px-4 py-3 rounded-2xl text-sm">
+            Registration successful! Redirecting to login...
+          </div>
+        )}
+
         <div>
           <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
           <input
@@ -57,6 +118,8 @@ export default function RegisterPage() {
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="George Wilson"
             type="text"
+            required
+            disabled={loading}
           />
         </div>
         <div>
@@ -66,6 +129,8 @@ export default function RegisterPage() {
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="george@example.com"
             type="email"
+            required
+            disabled={loading}
           />
         </div>
         <div>
@@ -75,6 +140,7 @@ export default function RegisterPage() {
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="+1 (555) 555-5555"
             type="tel"
+            disabled={loading}
           />
         </div>
         <div>
@@ -84,13 +150,17 @@ export default function RegisterPage() {
             className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-green/50 text-white rounded-2xl px-5 py-4 text-sm font-medium transition-all"
             placeholder="••••••••••••"
             type="password"
+            required
+            minLength={6}
+            disabled={loading}
           />
         </div>
         <button
-          className="w-full bg-white text-black font-extrabold py-4 rounded-2xl mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide primary-cta"
+          className="w-full bg-white text-black font-extrabold py-4 rounded-2xl mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide primary-cta disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
+          disabled={loading || success}
         >
-          Create Account
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
       </form>
 

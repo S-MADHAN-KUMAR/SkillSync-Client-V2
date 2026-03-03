@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import { IMAGES } from "@/constants/images";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-center min-h-screen p-6 bg-black">
-      <div className="registration-container w-full max-w-5xl h-[85vh] rounded-5xl overflow-hidden flex shadow-2xl border border-white/5">
+      <div className="registration-container w-full max-w-5xl  rounded-5xl overflow-hidden flex shadow-2xl border border-white/5">
         {/* Left Side: Creative Section */}
         <div className="hidden lg:flex w-1/2 bg-reg-card p-12 flex-col justify-between relative overflow-hidden rounded-l-5xl">
           <div className="relative z-10">
@@ -26,12 +27,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <div className="bg-white/5 backdrop-blur-md p-4 rounded-3xl border border-white/10 flex items-center gap-4 w-72">
               <div className="size-12 rounded-full bg-accent-pink flex items-center justify-center overflow-hidden">
                 <Image
-                  alt="User"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlZhpmmj5Yqf0_TpIwZTpFjqgsnpIsQRcwKCpVg-83X-FhsYgk4vewyJK1-jOJ5gpPexl0PCzkiBMHtfy_gCH6AhHHCT6VFVBeZsxInJhFHVI2BjNQp1ACGmO1o_smkriFGeNKt-gYSqtlxJ5ZfPi3lUCoBlX6JK40BdeaTRnTBJn5NiXNXRJH1l8hSkaid_ThKxPGlLYqJuugGV0mHiz3WfuqyjrQEagseO36yvER_JYxFoWjpxay3gsuwlGhOAkJACj00JGung4"
+                  alt="SkillSync Logo"
+                  src={IMAGES.logo}
                   width={48}
                   height={48}
                   className="w-full h-full object-cover"
-                  unoptimized
                 />
               </div>
               <div>

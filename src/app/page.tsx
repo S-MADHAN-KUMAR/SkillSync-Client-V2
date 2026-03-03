@@ -1,3 +1,5 @@
+import { IMAGES } from "@/constants/images";
+
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-charcoal to-black text-white selection:bg-accent-green selection:text-black">
@@ -7,15 +9,10 @@ export default function Home() {
             <div className="size-8 bg-accent-green rounded-full" />
             <span className="text-xl font-extrabold tracking-tight">SkillSync</span>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-400">
-            <a className="hover:text-white transition-colors" href="#">Find Jobs</a>
-            <a className="hover:text-white transition-colors" href="#">Hire Talent</a>
-            <a className="hover:text-white transition-colors" href="#">Resources</a>
-          </div>
         </div>
         <div className="flex items-center gap-4">
-          <button className="text-sm font-semibold hover:text-accent-green transition-colors">Log In</button>
-          <button className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-accent-green transition-all">Sign Up</button>
+          <a href="/login" className="text-sm font-semibold hover:text-accent-green transition-colors">Log In</a>
+          <a href="/register" className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-accent-green transition-all">Sign Up</a>
         </div>
       </nav>
 
@@ -176,7 +173,7 @@ export default function Home() {
             <div className="bg-card-gray p-6 rounded-[2rem] flex items-center justify-between hover:translate-x-2 transition-transform cursor-pointer">
               <div className="flex items-center gap-6">
                 <div className="size-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                  <img alt="Logo" className="size-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBXq84EQbOMq8AF-P_ClLt9wpiaMOqHmFt2VmgkoNKomlBc7F0HA7tHigh7r6cGE0bMaaA4-7Iss3QHAl6woXT14sKs40hWiv6SbW71rPyVKfOm2BJ63Emo1Fr_Ne-xRmpQuHZs0lkTux4c1lo7yy1V_GAyXDld56M6fF-BSln7QWQ4q1hbk0r-i1BVbK4jtn26YCj-359dyV4E8dQcXxRwUODO1Tbiimhs8_oXdcYSWhRrRgbBl2BdhfNFrk5bSX69haik0SQK4Y" />
+                  <img alt="TechFlow Logo" className="size-8" src={IMAGES.logo} />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-black">Senior Product Designer</h4>
@@ -195,7 +192,7 @@ export default function Home() {
             <div className="bg-card-gray p-6 rounded-[2rem] flex items-center justify-between hover:translate-x-2 transition-transform cursor-pointer">
               <div className="flex items-center gap-6">
                 <div className="size-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                  <img alt="Logo" className="size-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBXq84EQbOMq8AF-P_ClLt9wpiaMOqHmFt2VmgkoNKomlBc7F0HA7tHigh7r6cGE0bMaaA4-7Iss3QHAl6woXT14sKs40hWiv6SbW71rPyVKfOm2BJ63Emo1Fr_Ne-xRmpQuHZs0lkTux4c1lo7yy1V_GAyXDld56M6fF-BSln7QWQ4q1hbk0r-i1BVbK4jtn26YCj-359dyV4E8dQcXxRwUODO1Tbiimhs8_oXdcYSWhRrRgbBl2BdhfNFrk5bSX69haik0SQK4Y" />
+                  <img alt="CloudSphere Logo" className="size-8" src={IMAGES.logo} />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-black">Backend Engineer (Go)</h4>
@@ -214,7 +211,7 @@ export default function Home() {
             <div className="bg-card-gray p-6 rounded-[2rem] flex items-center justify-between hover:translate-x-2 transition-transform cursor-pointer">
               <div className="flex items-center gap-6">
                 <div className="size-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                  <img alt="Logo" className="size-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAARKNw6MgRL1CMl7ezKEG6um7IoACPNSbY8lcGEjOY32Nl-DaGXwmpQxYNkagFRD5Kb5kcNbQ01JBi97zxxjDHdlxUaWbtF7Ph5y0l6lFgYO8TtwzYh6Fuf7IxGF9l4ToVqoIm2-eUtwtK90SGrRRvRqeQyZYZ9fWtNe7jrQo-d7TB-JdM-gSzdSh5T1q6chfUiHeBOYEmOq5P5IW7NXddIXVEK2OmTN0F_CvPsOBDGu6MxraKm7SeiDycXxmNPAMg7M7LNZpdQgs" />
+                  <img alt="Vista Apps Logo" className="size-8" src={IMAGES.logo} />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-black">Growth Marketer</h4>
