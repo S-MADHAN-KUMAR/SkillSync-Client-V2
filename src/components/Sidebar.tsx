@@ -21,6 +21,7 @@ interface NavItem {
 const candidateNavItems: NavItem[] = [
   { icon: "home", label: "Home", href: "/candidate" },
   { icon: "dashboard", label: "Dashboard", href: "/candidate/dashboard" },
+  { icon: "auto_awesome", label: "SyncAI", href: "/candidate/syncai" },
   { icon: "business_center", label: "Jobs", href: "/candidate/jobs" },
   { icon: "mail", label: "Messages", href: "/candidate/messages", badge: 4 },
   { icon: "person", label: "Profile", href: "/candidate/profile" },
@@ -69,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, onSelect, activePanel
         isDragging.current = false;
         try {
           localStorage.setItem("sidebarWidth", String(width));
-        } catch {}
+        } catch { }
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
       }
@@ -95,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, onSelect, activePanel
     setWidth(280);
     try {
       localStorage.setItem("sidebarWidth", "280");
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -126,9 +127,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, onSelect, activePanel
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center space-x-4 px-4 py-3 rounded-2xl transition-colors ${
-                isActive ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
-              }`}
+              className={`flex items-center space-x-4 px-4 py-3 rounded-2xl transition-colors ${isActive ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
+                }`}
             >
               <span className="material-symbols-outlined">{item.icon}</span>
               <span className="font-medium text-sm flex-1">{item.label}</span>

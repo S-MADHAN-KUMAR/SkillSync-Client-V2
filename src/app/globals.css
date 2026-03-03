@@ -35,39 +35,85 @@ input::placeholder {
 }
 
 /* Custom sizes used in components */
-.size-5 { width: 20px; height: 20px; }
-.size-10 { width: 40px; height: 40px; }
-.size-12 { width: 48px; height: 48px; }
-.size-80 { width: 320px; height: 320px; }
+.size-5 {
+  width: 20px;
+  height: 20px;
+}
+
+.size-10 {
+  width: 40px;
+  height: 40px;
+}
+
+.size-12 {
+  width: 48px;
+  height: 48px;
+}
+
+.size-80 {
+  width: 320px;
+  height: 320px;
+}
 
 /* Rounded corner utility used in original design */
-.rounded-5xl { border-radius: 3.5rem; }
-.rounded-4xl { border-radius: 2.5rem; }
+.rounded-5xl {
+  border-radius: 3.5rem;
+}
+
+.rounded-4xl {
+  border-radius: 2.5rem;
+}
 
 /* Left / right rounded variants */
-.rounded-l-5xl { border-top-left-radius: 3.5rem; border-bottom-left-radius: 3.5rem; }
-.rounded-r-5xl { border-top-right-radius: 3.5rem; border-bottom-right-radius: 3.5rem; }
+.rounded-l-5xl {
+  border-top-left-radius: 3.5rem;
+  border-bottom-left-radius: 3.5rem;
+}
+
+.rounded-r-5xl {
+  border-top-right-radius: 3.5rem;
+  border-bottom-right-radius: 3.5rem;
+}
 
 /* Subtle inner container shadow to give depth */
-.auth-panel { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.auth-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
 
 /* Toggle container improvements */
-.role-toggle button { min-height: 44px; }
-.role-toggle { gap: 0.5rem; }
+.role-toggle button {
+  min-height: 44px;
+}
+
+.role-toggle {
+  gap: 0.5rem;
+}
 
 /* Make form inputs consistent */
-.auth-input { width: 100%; background-color: var(--color-input-bg); border: none; padding: 1rem 1.25rem; border-radius: 1rem; }
+.auth-input {
+  width: 100%;
+  background-color: var(--color-input-bg);
+  border: none;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+}
 
 /* Make primary CTA larger and pill-shaped */
-.primary-cta { padding: 1rem 1.25rem; border-radius: 1.25rem; font-weight: 800; }
+.primary-cta {
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  font-weight: 800;
+}
 
 /* Custom scrollbar for job/dashboard pages */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
