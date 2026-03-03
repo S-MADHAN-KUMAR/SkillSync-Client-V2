@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-reg-dark: #0f0f0f;
+  --color-reg-card: #1a1a1a;
+  --color-accent-green: #c1e7d1;
+  --color-accent-pink: #f6c3cc;
+  --color-accent-yellow: #f9e8b1;
+  --color-input-bg: #262626;
+
+  --font-display: "Manrope", sans-serif;
+  --font-inter: "Inter", var(--font-inter), sans-serif;
+
+  --radius-4xl: 2.5rem;
+  --radius-5xl: 3.5rem;
+}
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+body {
+  font-family: var(--font-display);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.registration-container {
+  background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+}
+
+input::placeholder {
+  color: #666666;
+}
+
+/* Custom sizes used in components */
+.size-5 { width: 20px; height: 20px; }
+.size-10 { width: 40px; height: 40px; }
+.size-12 { width: 48px; height: 48px; }
+.size-80 { width: 320px; height: 320px; }
+
+/* Rounded corner utility used in original design */
+.rounded-5xl { border-radius: 3.5rem; }
+.rounded-4xl { border-radius: 2.5rem; }
+
+/* Left / right rounded variants */
+.rounded-l-5xl { border-top-left-radius: 3.5rem; border-bottom-left-radius: 3.5rem; }
+.rounded-r-5xl { border-top-right-radius: 3.5rem; border-bottom-right-radius: 3.5rem; }
+
+/* Subtle inner container shadow to give depth */
+.auth-panel { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+
+/* Toggle container improvements */
+.role-toggle button { min-height: 44px; }
+.role-toggle { gap: 0.5rem; }
+
+/* Make form inputs consistent */
+.auth-input { width: 100%; background-color: var(--color-input-bg); border: none; padding: 1rem 1.25rem; border-radius: 1rem; }
+
+/* Make primary CTA larger and pill-shaped */
+.primary-cta { padding: 1rem 1.25rem; border-radius: 1.25rem; font-weight: 800; }
+
+/* Custom scrollbar for job/dashboard pages */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Material Icons styling */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
