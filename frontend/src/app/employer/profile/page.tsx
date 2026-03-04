@@ -180,30 +180,36 @@ export default function EmployerProfile() {
           </div>
 
           <div className="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
-            <div className="relative w-full h-48 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-[32px] overflow-hidden shadow-sm mb-16">
-              {employerData?.companybanner ? (
-                <img 
-                  alt="Company Banner" 
-                  className="w-full h-full object-cover" 
-                  src={employerData.companybanner}
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-r from-emerald-400 to-teal-500" />
-              )}
-              <div className="absolute -bottom-12 left-8 w-24 h-24 rounded-2xl bg-white p-2 shadow-lg flex items-center justify-center overflow-hidden border border-gray-100 z-10">
-                {employerData?.companylogo ? (
-                  <img 
-                    alt="Company Logo" 
-                    className="w-full h-full object-contain" 
-                    src={employerData.companylogo}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-black text-3xl">
-                    {getCompanyInitials()}
-                  </div>
-                )}
-              </div>
-            </div>
+            <div className="relative w-full mb-16">
+  {/* Banner */}
+  <div className="w-full h-48 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-[32px] overflow-hidden shadow-sm">
+    {employerData?.companybanner ? (
+      <img 
+        alt="Company Banner" 
+        className="w-full h-full object-cover" 
+        src={employerData.companybanner}
+      />
+    ) : (
+      <div className="w-full h-full bg-gradient-to-r from-emerald-400 to-teal-500" />
+    )}
+  </div>
+
+  {/* Logo — outside the overflow-hidden banner div */}
+  <div className="absolute bottom-0 translate-y-1/2 left-8 w-24 h-24 rounded-2xl bg-white  shadow-lg flex items-center justify-center overflow-hidden border border-gray-100 z-30">
+    {employerData?.companylogo ? (
+      <img 
+        alt="Company Logo" 
+        className="w-full h-full object-cover" 
+        src={employerData.companylogo}
+      />
+    ) : (
+      <div className="w-full h-full bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-black text-3xl">
+        {getCompanyInitials()}
+      </div>
+    )}
+  </div>
+</div>
+            
 
             <div className="px-2 mb-8">
               <h1 className="text-3xl font-bold text-gray-900">
