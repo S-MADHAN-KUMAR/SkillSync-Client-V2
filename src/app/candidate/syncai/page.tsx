@@ -237,7 +237,14 @@ export default function SyncAIPage() {
                             </div>
                         </div>
 
-                        <button className="w-full h-16 bg-gray-900 text-white rounded-3xl font-bold text-lg hover:bg-black transition-all shadow-xl hover:shadow-black/20 flex items-center justify-center space-x-3 group active:scale-[0.98]">
+                        <button
+                            onClick={() => {
+                                if (activeFeature.id === "interview") {
+                                    router.push("/candidate/ai-interview");
+                                }
+                            }}
+                            className="w-full h-16 bg-gray-900 text-white rounded-3xl font-bold text-lg hover:bg-black transition-all shadow-xl hover:shadow-black/20 flex items-center justify-center space-x-3 group active:scale-[0.98]"
+                        >
                             <span>Get Started</span>
                             <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">play_arrow</span>
                         </button>

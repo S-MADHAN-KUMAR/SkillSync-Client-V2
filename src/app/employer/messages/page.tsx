@@ -1,10 +1,56 @@
 "use client";
-
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { useState } from "react";
 
-export default function CandidateMessages() {
+interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  userType: "candidate" | "employer";
+  is_onboarded: boolean;
+}
+
+export default function EmployerMessages() {
+  const [user, setUser] = useState<User | null>(null);
   const [selected, setSelected] = useState(0);
+  const router = useRouter();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(storedUser);
+      if (userData.userType !== "employer") {
+        router.push("/candidate");
+        return;
+      }
+      setUser(userData);
+    } catch {
+      router.push("/login");
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0f0f]">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   const chats = [
     { id: 1, name: "Sarah Jenkins", time: "2m ago", preview: "Typing...", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U" },
@@ -22,7 +68,7 @@ export default function CandidateMessages() {
   return (
     <div className="flex items-center justify-center min-h-screen  bg-[#1a1a1a]">
       <div className="w-full  bg-white overflow-hidden flex  min-h-[100vh] ">
-        <Sidebar />
+        <Sidebar user={user} onLogout={handleLogout} />
 
         <main className="w-[420px] bg-[#f5f7f9] flex flex-col border-r border-gray-200 shrink-0">
           <div className="p-6">
@@ -50,7 +96,7 @@ export default function CandidateMessages() {
                       <h4 className="text-sm font-bold text-gray-900 truncate">{c.name}</h4>
                       <span className="text-[10px] text-gray-400">{c.time}</span>
                     </div>
-                    <p className={`text-xs ${i===0? 'text-blue-600 font-medium':'text-gray-500'} truncate`}>{c.preview}</p>
+                    <p className={`text-xs ${i === 0 ? 'text-blue-600 font-medium' : 'text-gray-500'} truncate`}>{c.preview}</p>
                   </div>
                 </div>
               </div>

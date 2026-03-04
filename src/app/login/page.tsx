@@ -1,15 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthLayout from "@/components/AuthLayout";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [verified, setVerified] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("verified") === "true") {
+      setVerified(true);
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,6 +68,7 @@ export default function LoginPage() {
           email: raw.email ?? raw.email_address ?? null,
           fullName: raw.fullName ?? raw.fullname ?? raw.full_name ?? raw.name ?? "",
           userType: raw.userType ?? raw.usertype ?? raw.user_type ?? raw.role ?? "",
+          is_onboarded: raw.is_onboarded ?? false,
         };
 
         // Fallback: if still missing userType, try to infer
@@ -67,8 +76,15 @@ export default function LoginPage() {
 
         localStorage.setItem("user", JSON.stringify(normalized));
 
-        // Redirect based on normalized userType
-        const redirectPath = normalized.userType === "employer" ? "/employer" : "/candidate";
+        // Redirect based on normalized userType and onboarding status
+        let redirectPath = normalized.userType === "employer" ? "/employer" : "/candidate";
+
+        if (!normalized.is_onboarded) {
+          redirectPath = normalized.userType === "employer" ? "/employer/onboarding" : "/candidate/onboarding";
+        } else {
+          redirectPath = normalized.userType === "employer" ? "/employer/dashboard" : "/candidate/dashboard";
+        }
+
         setTimeout(() => {
           router.push(redirectPath);
         }, 500);
@@ -92,7 +108,13 @@ export default function LoginPage() {
             {error}
           </div>
         )}
-        
+
+        {verified && (
+          <div className="bg-green-500/20 border border-green-500 text-green-200 px-4 py-3 rounded-2xl text-sm">
+            Email verified successfully! You can now log in.
+          </div>
+        )}
+
         {success && (
           <div className="bg-green-500/20 border border-green-500 text-green-200 px-4 py-3 rounded-2xl text-sm">
             Login successful! Redirecting...

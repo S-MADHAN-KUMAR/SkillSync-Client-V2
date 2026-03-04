@@ -9,6 +9,7 @@ interface User {
   email: string;
   fullName: string;
   userType: "candidate" | "employer";
+  is_onboarded: boolean;
 }
 
 const CandidateFeed: React.FC = () => {
@@ -32,6 +33,10 @@ const CandidateFeed: React.FC = () => {
       const userData = JSON.parse(storedUser);
       if (userData.userType !== "candidate") {
         router.push("/employer");
+        return;
+      }
+      if (!userData.is_onboarded) {
+        router.push("/candidate/onboarding");
         return;
       }
       setUser(userData);
@@ -163,9 +168,8 @@ const CandidateFeed: React.FC = () => {
             {posts.map((post) => (
               <div
                 key={post.id}
-                className={`bg-white p-5 rounded-[28px] shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
-                  post.isFeatured ? "border-2 border-blue-500" : "border border-transparent"
-                } group`}
+                className={`bg-white p-5 rounded-[28px] shadow-sm hover:shadow-md transition-shadow cursor-pointer ${post.isFeatured ? "border-2 border-blue-500" : "border border-transparent"
+                  } group`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -267,9 +271,8 @@ const CandidateFeed: React.FC = () => {
 
                 {comments.map((comment) => (
                   <div key={comment.id} className="flex space-x-4">
-                    <div className={`w-10 h-10 rounded-full shrink-0 overflow-hidden flex items-center justify-center text-white text-xs font-bold ${
-                      comment.avatar === "GK" ? "bg-blue-500" : "bg-gray-200"
-                    }`}>
+                    <div className={`w-10 h-10 rounded-full shrink-0 overflow-hidden flex items-center justify-center text-white text-xs font-bold ${comment.avatar === "GK" ? "bg-blue-500" : "bg-gray-200"
+                      }`}>
                       {comment.avatar}
                     </div>
                     <div className="flex-1">
@@ -288,9 +291,8 @@ const CandidateFeed: React.FC = () => {
                       {/* Nested Replies */}
                       {comment.replies.map((reply) => (
                         <div key={reply.id} className="flex space-x-4 mt-4 ml-4 border-l-2 border-gray-100 pl-4">
-                          <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold ${
-                            reply.isAuthor ? "bg-gray-900" : "bg-gray-400"
-                          }`}>
+                          <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold ${reply.isAuthor ? "bg-gray-900" : "bg-gray-400"
+                            }`}>
                             {reply.avatar}
                           </div>
                           <div className="flex-1">

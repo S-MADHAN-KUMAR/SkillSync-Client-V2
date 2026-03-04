@@ -1,12 +1,62 @@
 "use client";
 
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
-export default function CandidateProfile() {
+interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  userType: "candidate" | "employer";
+  is_onboarded: boolean;
+}
+
+export default function EmployerProfile() {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(storedUser);
+      if (userData.userType !== "employer") {
+        router.push("/candidate");
+        return;
+      }
+      setUser(userData);
+    } catch {
+      router.push("/login");
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0f0f]">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-[#1a1a1a]">
-      <div className="w-full max-w-[1440px] h-[900px] bg-white rounded-[40px] overflow-hidden flex shadow-2xl">
-        <Sidebar />
+    <div className="flex items-center justify-center   bg-[#1a1a1a]">
+      <div className="w-full  bg-white overflow-hidden flex  ">
+        <Sidebar user={user} onLogout={handleLogout} />
 
         <main className="w-[680px] bg-[#f5f7f9] flex flex-col border-r border-gray-200 overflow-y-auto custom-scrollbar shrink-0">
           <div className="relative mb-20 shrink-0">

@@ -1,43 +1,20 @@
 "use client";
 
-export default function AIMockInterviewSession() {
-  return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-[#1a1a1a]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      <div className="w-full max-w-[1440px] h-[900px] bg-white rounded-[40px] overflow-hidden flex shadow-2xl">
-        <aside className="w-[280px] bg-[var(--deep-charcoal)] flex flex-col items-center py-10 text-white shrink-0 z-10">
-          <div className="mb-8 flex flex-col items-center">
-            <div className="w-24 h-24 rounded-full border-4 border-gray-600 p-1 mb-4 overflow-hidden">
-              <img alt="User Avatar" className="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U" />
-            </div>
-            <h2 className="text-xl font-bold">Hi, George!</h2>
-            <p className="text-xs text-gray-400 mt-1">Ready for your interview?</p>
-          </div>
-          <nav className="flex-1 w-full px-6 space-y-2">
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">dashboard</span>
-              <span className="font-medium text-sm">Dashboard</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 bg-white/10 rounded-2xl text-white" href="#">
-              <span className="material-symbols-outlined">mic</span>
-              <span className="font-medium text-sm">Mock Interview</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">description</span>
-              <span className="font-medium text-sm">Resumes</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">history</span>
-              <span className="font-medium text-sm">History</span>
-            </a>
-          </nav>
-          <div className="mt-auto w-full px-8 pb-8 flex flex-col items-center">
-            <button className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors">
-              <span className="material-symbols-outlined">logout</span>
-              <span className="font-semibold text-sm">End Session</span>
-            </button>
-          </div>
-        </aside>
+import Sidebar from "@/components/Sidebar";
+import { useRouter } from "next/navigation";
 
+export default function AIMockInterviewSession() {
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    router.push("/candidate/ai-interview/result");
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen  bg-[#1a1a1a]" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <div className="w-full  h-[900px] bg-white   overflow-hidden flex  ">
+
+        <Sidebar />
         <main className="flex-1 bg-[var(--off-white)] flex flex-col justify-center items-center relative overflow-hidden">
           <div className="absolute top-8 left-8 flex items-center space-x-2">
             <span className="flex h-3 w-3 relative">
@@ -107,7 +84,7 @@ export default function AIMockInterviewSession() {
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-100">
-            <button className="w-full h-14 bg-[var(--deep-charcoal)] text-white rounded-xl font-bold text-sm hover:bg-black transition-colors shadow-lg flex items-center justify-center space-x-2">
+            <button onClick={handleSubmit} className="w-full h-14 bg-[var(--deep-charcoal)] text-white rounded-xl font-bold text-sm hover:bg-black transition-colors shadow-lg flex items-center justify-center space-x-2">
               <span>Submit Answer</span>
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>

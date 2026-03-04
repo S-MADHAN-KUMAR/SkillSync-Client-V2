@@ -18,6 +18,15 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
+  --deep-charcoal: #252525;
+  --off-white: #f5f7f9;
+  --preview-bg: #f8fafc;
+  --card-white: #ffffff;
+  --accent-blue: #3b82f6;
+  --accent-red: #ef4444;
+  --accent-yellow: #facc15;
+  --accent-pink: #f472b6;
+  --accent-green: #4ade80;
 }
 
 body {

@@ -1,42 +1,61 @@
 "use client";
 
+import Sidebar from "@/components/Sidebar";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  userType: "candidate" | "employer";
+}
+
 export default function AIInterviewResult() {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const userData: User = JSON.parse(storedUser);
+      if (userData.userType !== "candidate") {
+        router.push("/employer");
+        return;
+      }
+      setUser(userData);
+    } catch {
+      router.push("/login");
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0f0f]">
+        <div className="text-white text-xl font-medium">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-[#1a1a1a]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      <div className="w-full bg-white overflow-hidden flex shadow-2xl">
-        <aside className="w-[280px] bg-[var(--deep-charcoal)] flex flex-col items-center py-10 text-white shrink-0">
-          <div className="mb-8 flex flex-col items-center">
-            <div className="w-24 h-24 rounded-full border-4 border-gray-600 p-1 mb-4 overflow-hidden">
-              <img alt="User Avatar" className="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U" />
-            </div>
-            <h2 className="text-xl font-bold">George K.</h2>
-            <p className="text-xs text-gray-400 mt-1">Full Stack Developer</p>
-          </div>
-          <nav className="flex-1 w-full px-6 space-y-2">
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">dashboard</span>
-              <span className="font-medium text-sm">Dashboard</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 bg-white/10 rounded-2xl text-white" href="#">
-              <span className="material-symbols-outlined">mic</span>
-              <span className="font-medium text-sm">Mock Interview</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">work</span>
-              <span className="font-medium text-sm">Jobs</span>
-            </a>
-            <a className="flex items-center space-x-4 px-4 py-3 text-gray-400 hover:text-white transition-colors" href="#">
-              <span className="material-symbols-outlined">description</span>
-              <span className="font-medium text-sm">CV Review</span>
-            </a>
-          </nav>
-          <div className="mt-auto w-full px-8 pb-8 flex flex-col items-center">
-            <button className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors">
-              <span className="material-symbols-outlined">logout</span>
-              <span className="font-semibold text-sm">Logout</span>
-            </button>
-          </div>
-        </aside>
+    <div className="flex items-center justify-center min-h-screen   bg-[#1a1a1a]" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <div className="w-full bg-white overflow-hidden flex  ">
+        <Sidebar user={user} onLogout={handleLogout} />
 
         <main className="flex-1 bg-[var(--off-white)] flex flex-col border-r border-gray-200 overflow-hidden relative">
           <div className="p-8 pb-4">

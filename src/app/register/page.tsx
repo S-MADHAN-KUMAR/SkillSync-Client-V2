@@ -16,12 +16,13 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
+
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       const name = formData.get("name") as string;
       const email = formData.get("email") as string;
+      const mobile = formData.get("mobile") as string;
       const password = formData.get("password") as string;
 
       // Validate inputs
@@ -40,6 +41,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           fullName: name,
           email: email,
+          mobile_number: mobile,
           password: password,
           userType: role,
         }),
@@ -55,11 +57,9 @@ export default function RegisterPage() {
 
       setSuccess(true);
       console.log("Registration successful:", data);
-      
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+
+      // Redirect to OTP verification page
+      router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred during registration");
       setLoading(false);
@@ -104,7 +104,7 @@ export default function RegisterPage() {
             {error}
           </div>
         )}
-        
+
         {success && (
           <div className="bg-green-500/20 border border-green-500 text-green-200 px-4 py-3 rounded-2xl text-sm">
             Registration successful! Redirecting to login...

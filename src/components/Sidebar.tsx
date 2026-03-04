@@ -21,17 +21,23 @@ interface NavItem {
 const candidateNavItems: NavItem[] = [
   { icon: "home", label: "Home", href: "/candidate" },
   { icon: "dashboard", label: "Dashboard", href: "/candidate/dashboard" },
+  { icon: "article", label: "All Posts", href: "/candidate/posts" },
   { icon: "auto_awesome", label: "SyncAI", href: "/candidate/syncai" },
+  { icon: "group", label: "Connections", href: "/candidate/connections" },
   { icon: "business_center", label: "Jobs", href: "/candidate/jobs" },
+  { icon: "corporate_fare", label: "Companies", href: "/candidate/companies" },
   { icon: "mail", label: "Messages", href: "/candidate/messages", badge: 4 },
+  { icon: "description", label: "Applications", href: "/candidate/applications" },
   { icon: "person", label: "Profile", href: "/candidate/profile" },
 ];
 
 const employerNavItems: NavItem[] = [
   { icon: "home", label: "Home", href: "/employer" },
-  { icon: "business_center", label: "Postings", href: "/employer/jobs" },
   { icon: "mail", label: "Messages", href: "/employer/messages", badge: 2 },
+  { icon: "description", label: "Applications", href: "/employer/applications" },
   { icon: "person", label: "Profile", href: "/employer/profile" },
+  { icon: "group", label: "Connections", href: "/employer/connections" },
+  { icon: "corporate_fare", label: "Companies", href: "/employer/companies" },
 ];
 
 interface SidebarProps {

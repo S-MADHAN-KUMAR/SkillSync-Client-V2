@@ -1,10 +1,48 @@
 "use client";
-
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { useState } from "react";
 
-export default function CandidateApplications() {
+interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  userType: "candidate" | "employer";
+  is_onboarded: boolean;
+}
+
+export default function EmployerApplications() {
+  const [user, setUser] = useState<User | null>(null);
   const [selected, setSelected] = useState(0);
+  const router = useRouter();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(storedUser);
+      if (userData.userType !== "employer") {
+        router.push("/candidate");
+        return;
+      }
+      setUser(userData);
+    } catch {
+      router.push("/login");
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
 
   const applications = [
     {
@@ -48,10 +86,18 @@ export default function CandidateApplications() {
 
   const selectedApp = applications[selected] || applications[0];
 
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0f0f]">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-[#1a1a1a]">
-      <div className="w-full max-w-[1440px] h-[900px] bg-white rounded-[40px] overflow-hidden flex shadow-2xl">
-        <Sidebar />
+    <div className="flex items-center justify-center min-h-screen bg-[#1a1a1a]">
+      <div className="w-full bg-white overflow-hidden flex min-h-[100vh] shadow-2xl">
+        <Sidebar user={user} onLogout={handleLogout} />
 
         <main className="w-[480px] bg-[#f5f7f9] flex flex-col border-r border-gray-200 shrink-0">
           <div className="p-8 pb-4">
