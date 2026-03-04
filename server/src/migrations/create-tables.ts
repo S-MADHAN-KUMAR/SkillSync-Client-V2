@@ -117,6 +117,23 @@ async function runMigrations() {
         console.log("✅ employers table created\n");
 
         // ══════════════════════════════════════════════════
+        // 4. POSTS TABLE
+        // ══════════════════════════════════════════════════
+        console.log("📋 Creating posts table...");
+        await sql`
+      CREATE TABLE IF NOT EXISTS posts (
+        id              SERIAL PRIMARY KEY,
+        user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title           VARCHAR(500) NOT NULL,
+        description     TEXT NOT NULL,
+        images          JSONB DEFAULT '[]'::jsonb,
+        created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+        console.log("✅ posts table created\n");
+
+        // ══════════════════════════════════════════════════
         // CREATE INDEXES
         // ══════════════════════════════════════════════════
         console.log("📋 Creating indexes...");
@@ -124,6 +141,7 @@ async function runMigrations() {
         await sql`CREATE INDEX IF NOT EXISTS idx_users_user_type ON users(user_type)`;
         await sql`CREATE INDEX IF NOT EXISTS idx_candidates_user_id ON candidates(user_id)`;
         await sql`CREATE INDEX IF NOT EXISTS idx_employers_user_id ON employers(user_id)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_posts_user_id ON posts(user_id)`;
         console.log("✅ Indexes created\n");
 
         console.log("╔══════════════════════════════════════════════╗");

@@ -22,6 +22,7 @@ interface Education {
 export default function CandidateOnboarding() {
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const hasChecked = useRef(false);
 
@@ -83,13 +84,27 @@ export default function CandidateOnboarding() {
     }, [router]);
 
     const handleNext = async () => {
-        // Save at every step
-        await saveStepProfile();
+        // Prevent double submissions
+        if (isLoading) return;
+        
+        setIsLoading(true);
+        
+        try {
+            // Save at every step and only advance on success
+            const ok = await saveStepProfile();
 
-        if (step < 4) {
-            setStep(step + 1);
-        } else {
-            handleComplete();
+            if (!ok) {
+                // stop progression if save failed
+                return;
+            }
+
+            if (step < 4) {
+                setStep(step + 1);
+            } else {
+                handleComplete();
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -97,8 +112,8 @@ export default function CandidateOnboarding() {
         if (step > 1) setStep(step - 1);
     };
 
-    const saveStepProfile = async () => {
-        if (!user) return;
+    const saveStepProfile = async (): Promise<boolean> => {
+        if (!user) return false;
 
         try {
             const profileData: any = {};
@@ -128,17 +143,48 @@ export default function CandidateOnboarding() {
                 profileData.education = formData.education;
             }
 
-            const response = await fetch(`http://localhost:3000/api/candidates/${user.id}`, {
+            const response = await fetch(`http://localhost:5000/api/candidates/${user.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
                 body: JSON.stringify(profileData),
             });
 
+            console.log("Response status:", response.status, response.statusText);
+
             if (!response.ok) {
-                console.error("Step save failed");
+                // Try to parse json error details when available
+                let bodyText = "";
+                try {
+                    const data = await response.json();
+                    bodyText = data?.message || JSON.stringify(data);
+                } catch (e) {
+                    bodyText = await response.text();
+                }
+
+                console.error("Step save failed:", {
+                    status: response.status,
+                    statusText: response.statusText,
+                    body: bodyText,
+                    url: response.url,
+                    headers: Object.fromEntries(response.headers.entries()),
+                });
+
+                alert(`Failed to save step: ${response.status} ${response.statusText}\n${bodyText}`);
+                return false;
             }
+
+            // Optionally consume and log success body
+            try {
+                const successData = await response.json();
+                console.log("Step saved:", successData);
+            } catch (e) {
+                console.log("Step saved (no JSON response)");
+            }
+
+            return true;
         } catch (error) {
             console.error("Error in saveStepProfile:", error);
+            return false;
         }
     };
 
@@ -150,7 +196,7 @@ export default function CandidateOnboarding() {
             await saveStepProfile();
 
             // 2. Mark User as Onboarded
-            const userResponse = await fetch(`http://localhost:3000/api/users/${user.id}`, {
+            const userResponse = await fetch(`http://localhost:5000/api/users/${user.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -301,9 +347,7 @@ export default function CandidateOnboarding() {
                 <div className="hidden lg:flex w-5/12 bg-[#1a1a1a] p-12 flex-col justify-between relative overflow-hidden">
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 mb-12">
-                            <div className="size-10 bg-[#c1e7d1] rounded-xl flex items-center justify-center">
-                                <span className="material-symbols-outlined text-black font-bold">work</span>
-                            </div>
+                           <img src="/logo.png" alt="SkillSync Logo" className="w-10 h-10" />
                             <span className="text-white font-extrabold text-xl tracking-tight">SkillSync</span>
                         </div>
                         <h1 className="text-5xl font-extrabold text-white leading-tight">
@@ -645,16 +689,28 @@ export default function CandidateOnboarding() {
                             {step > 1 && (
                                 <button
                                     onClick={handleBack}
-                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5"
+                                    disabled={isLoading}
+                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Back
                                 </button>
                             )}
                             <button
                                 onClick={handleNext}
-                                className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                disabled={isLoading}
+                                className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
                             >
-                                {step === 4 ? "Complete Profile" : "Save & Continue"}
+                                {isLoading ? (
+                                    <>
+                                        <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span>Saving...</span>
+                                    </>
+                                ) : (
+                                    <span>{step === 4 ? "Complete Profile" : "Save & Continue"}</span>
+                                )}
                             </button>
                         </div>
 

@@ -10,3 +10,15 @@ export interface IRepository<T> {
     update(id: string, data: Partial<T>): Promise<T | null>;
     delete(id: string): Promise<boolean>;
 }
+
+/**
+ * Post Repository Interface
+ */
+export interface IPostRepository {
+    create(userId: number, title: string, description: string, images: string[]): Promise<any>;
+    getAll(): Promise<any[]>;
+    getByUserId(userId: number): Promise<any[]>;
+    getById(postId: number): Promise<any>;
+    delete(postId: number, userId: number): Promise<boolean>;
+    update(postId: number, userId: number, title: string, description: string, images: string[]): Promise<any>;
+}

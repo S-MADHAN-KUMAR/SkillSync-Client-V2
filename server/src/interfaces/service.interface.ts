@@ -10,3 +10,15 @@ export interface IService<T> {
     update(id: string, data: Partial<T>): Promise<T | null>;
     remove(id: string): Promise<boolean>;
 }
+
+/**
+ * Post Service Interface
+ */
+export interface IPostService {
+    createPost(userId: number, title: string, description: string, images: string[]): Promise<any>;
+    getAllPosts(): Promise<any[]>;
+    getUserPosts(userId: number): Promise<any[]>;
+    getPostById(postId: number): Promise<any>;
+    deletePost(postId: number, userId: number): Promise<boolean>;
+    updatePost(postId: number, userId: number, title: string, description: string, images: string[]): Promise<any>;
+}

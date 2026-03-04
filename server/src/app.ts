@@ -24,9 +24,25 @@ class App {
      */
     private initializeMiddlewares(): void {
         // ── CORS ──────────────────────────────────────────
+        const allowedOrigins = [
+            "http://localhost:3000",  // Next.js default
+            "http://localhost:4000",  // Alternative port
+            envConfig.CORS_ORIGIN,    // Custom from .env
+        ].filter(Boolean);
+
         this.app.use(
             cors({
-                origin: envConfig.CORS_ORIGIN,
+                origin: (origin, callback) => {
+                    // Allow requests with no origin (like mobile apps, Postman, curl)
+                    if (!origin) return callback(null, true);
+                    
+                    if (allowedOrigins.includes(origin)) {
+                        callback(null, true);
+                    } else {
+                        console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
+                        callback(new Error("Not allowed by CORS"));
+                    }
+                },
                 credentials: true,
                 methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
                 allowedHeaders: ["Content-Type", "Authorization"],

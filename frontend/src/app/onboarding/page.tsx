@@ -48,9 +48,7 @@ export default function Onboarding() {
         <div className="hidden lg:flex w-5/12 bg-reg-card p-12 flex-col justify-between relative overflow-hidden rounded-l-5xl">
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-12">
-              <div className="size-10 bg-accent-green rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-black font-bold">work</span>
-              </div>
+              <img src="/logo.png" alt="SkillSync Logo" className="w-10 h-10" />
               <span className="text-white font-extrabold text-xl tracking-tight">SkillSync</span>
             </div>
             <h1 className="text-4xl font-extrabold text-white leading-tight mb-4">Build your future profile.</h1>

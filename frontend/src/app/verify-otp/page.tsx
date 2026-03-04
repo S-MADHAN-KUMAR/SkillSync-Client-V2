@@ -62,7 +62,7 @@ export default function VerifyOTPPage() {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:3000/api/users/verify-otp", {
+            const response = await fetch("http://localhost:5000/api/users/verify-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, otp: fullOtp }),
@@ -88,7 +88,7 @@ export default function VerifyOTPPage() {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:3000/api/users/resend-otp", {
+            const response = await fetch("http://localhost:5000/api/users/resend-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -141,9 +141,7 @@ export default function VerifyOTPPage() {
                 <div className="hidden lg:flex w-1/2 bg-reg-card p-12 flex-col justify-between relative overflow-hidden">
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 mb-12">
-                            <div className="size-10 bg-accent-green rounded-xl flex items-center justify-center">
-                                <span className="material-symbols-outlined text-black font-bold">shield</span>
-                            </div>
+                            <img src="/logo.png" alt="SkillSync Logo" className="w-10 h-10" />
                             <span className="text-white font-extrabold text-xl tracking-tight">SkillSync</span>
                         </div>
                         <h1 className="text-5xl font-extrabold text-white leading-tight">

@@ -105,7 +105,7 @@ export default function EmployerOnboarding() {
                 profileData.ispublic = true;
             }
 
-            const response = await fetch(`http://localhost:3000/api/employers/${user.id}`, {
+            const response = await fetch(`http://localhost:5000/api/employers/${user.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(profileData),
@@ -149,7 +149,7 @@ export default function EmployerOnboarding() {
             await saveStepProfile();
 
             // 2. Mark User as Onboarded
-            const userResponse = await fetch(`http://localhost:3000/api/users/${user.id}`, {
+            const userResponse = await fetch(`http://localhost:5000/api/users/${user.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

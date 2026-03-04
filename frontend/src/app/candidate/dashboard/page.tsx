@@ -96,9 +96,14 @@ const SavedPostCard = ({
 export default function CandidateDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [postTitle, setPostTitle] = useState("");
+  const [postDescription, setPostDescription] = useState("");
+  const [postImages, setPostImages] = useState<string[]>([]);
+  const [isPublishing, setIsPublishing] = useState(false);
   const router = useRouter();
   const hasChecked = useRef(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -136,6 +141,72 @@ export default function CandidateDashboard() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     router.push("/login");
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach((file) => {
+      if (postImages.length >= 4) {
+        alert("Maximum 4 images allowed");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setPostImages((prev) => [...prev, base64String]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setPostImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handlePublishPost = async () => {
+    if (!user || !postTitle.trim() || !postDescription.trim()) {
+      alert("Please fill in title and description");
+      return;
+    }
+
+    setIsPublishing(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          title: postTitle,
+          description: postDescription,
+          images: postImages,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to publish post");
+      }
+
+      const data = await response.json();
+      console.log("Post published:", data);
+
+      // Clear form
+      setPostTitle("");
+      setPostDescription("");
+      setPostImages([]);
+
+      alert("Post published successfully! 🎉");
+    } catch (error) {
+      console.error("Error publishing post:", error);
+      alert("Failed to publish post. Please try again.");
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   if (!user) {
@@ -217,36 +288,65 @@ export default function CandidateDashboard() {
                       className="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 font-medium placeholder-gray-400 focus:ring-2 focus:ring-blue-500 transition-all"
                       placeholder="Post Title"
                       type="text"
+                      value={postTitle}
+                      onChange={(e) => setPostTitle(e.target.value)}
                     />
                   </div>
                   <div>
                     <textarea
                       className="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 transition-all resize-none h-24"
                       placeholder="What's on your mind? Share your thoughts or achievements..."
+                      value={postDescription}
+                      onChange={(e) => setPostDescription(e.target.value)}
                     />
                   </div>
                   <div className="flex gap-3 overflow-x-auto pb-2">
-                    <button className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-colors shrink-0">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-colors shrink-0"
+                    >
                       <span className="material-symbols-outlined">add_photo_alternate</span>
                     </button>
-                    {[1, 2, 3].map((i) => (
+                    {postImages.map((img, i) => (
                       <div
                         key={i}
-                        className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 relative group cursor-pointer"
+                        className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 relative group cursor-pointer overflow-hidden"
                       >
-                        <span className="material-symbols-outlined text-gray-400">image</span>
-                        {i === 1 && (
-                          <div className="absolute inset-0 bg-black/20 rounded-xl hidden group-hover:flex items-center justify-center">
-                            <span className="material-symbols-outlined text-white">close</span>
-                          </div>
-                        )}
+                        <img src={img} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
+                        <div
+                          onClick={() => removeImage(i)}
+                          className="absolute inset-0 bg-black/50 rounded-xl hidden group-hover:flex items-center justify-center"
+                        >
+                          <span className="material-symbols-outlined text-white">close</span>
+                        </div>
                       </div>
                     ))}
                   </div>
                   <div className="flex justify-end pt-2">
-                    <button className="px-6 py-2.5 bg-gray-900 text-white rounded-full font-bold text-sm hover:bg-black transition-colors shadow-lg flex items-center gap-2">
-                      <span className="material-symbols-outlined text-sm">send</span>
-                      Publish
+                    <button
+                      onClick={handlePublishPost}
+                      disabled={isPublishing || !postTitle.trim() || !postDescription.trim()}
+                      className="px-6 py-2.5 bg-gray-900 text-white rounded-full font-bold text-sm hover:bg-black transition-colors shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isPublishing ? (
+                        <>
+                          <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                          Publishing...
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-sm">send</span>
+                          Publish
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

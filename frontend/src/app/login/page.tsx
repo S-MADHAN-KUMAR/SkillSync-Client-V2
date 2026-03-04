@@ -38,7 +38,7 @@ export default function LoginPage() {
       }
 
       // Make API call to login
-      const response = await fetch("http://localhost:3000/api/users/login", {
+      const response = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,7 +144,7 @@ export default function LoginPage() {
           />
         </div>
         <div className="flex justify-end mt-1">
-          <Link href="#" className="text-xs font-bold text-accent-green hover:underline">
+          <Link href="/forgot-password" title="Go to forgot password page" className="text-xs font-bold text-accent-green hover:underline">
             Forgot Password?
           </Link>
         </div>
