@@ -27,4 +27,8 @@ rootRouter.use("/employers", employerRoutes.router);
 const postRoutes = container.getPostRoutes();
 rootRouter.use("/posts", postRoutes.router);
 
+// ── Upload Routes ─────────────────────────────────────
+const uploadRoutes = container.getUploadRoutes();
+rootRouter.use("/upload", uploadRoutes.router);
+
 export default rootRouter;

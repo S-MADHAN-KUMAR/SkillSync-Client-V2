@@ -21,6 +21,7 @@ import UserController from "../controllers/user.controller";
 import CandidateController from "../controllers/candidate.controller";
 import EmployerController from "../controllers/employer.controller";
 import PostController from "../controllers/post.controller";
+import UploadController from "../controllers/upload.controller";
 
 // ── Routes ────────────────────────────────────────────
 import HealthRoutes from "../routes/health.routes";
@@ -28,6 +29,7 @@ import UserRoutes from "../routes/user.routes";
 import CandidateRoutes from "../routes/candidate.routes";
 import EmployerRoutes from "../routes/employer.routes";
 import PostRoutes from "../routes/post.routes";
+import UploadRoutes from "../routes/upload.routes";
 
 /**
  * Dependency Injection Container
@@ -81,6 +83,10 @@ class DIContainer {
     private postController!: PostController;
     private postRoutes!: PostRoutes;
 
+    // Upload
+    private uploadController!: UploadController;
+    private uploadRoutes!: UploadRoutes;
+
     private constructor() {
         this.database = NeonDatabase.getInstance();
         this.mailService = new MailService();
@@ -132,6 +138,7 @@ class DIContainer {
         this.candidateController = new CandidateController(this.candidateService);
         this.employerController = new EmployerController(this.employerService);
         this.postController = new PostController(this.postService);
+        this.uploadController = new UploadController();
 
         // ══════════════════════════════════════════════════
         // Layer 4: Routes (depend on Controllers)
@@ -141,6 +148,7 @@ class DIContainer {
         this.candidateRoutes = new CandidateRoutes(this.candidateController);
         this.employerRoutes = new EmployerRoutes(this.employerController);
         this.postRoutes = new PostRoutes(this.postController);
+        this.uploadRoutes = new UploadRoutes(this.uploadController);
     }
 
     // ── Route Getters ───────────────────────────────────
@@ -162,6 +170,10 @@ class DIContainer {
 
     public getPostRoutes(): PostRoutes {
         return this.postRoutes;
+    }
+
+    public getUploadRoutes(): UploadRoutes {
+        return this.uploadRoutes;
     }
 }
 

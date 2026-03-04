@@ -59,14 +59,20 @@ class EmployerRepository {
 
             if (field === "companyname") {
                 await this.sql`UPDATE employers SET companyname = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
-            } else if (field === "logo") {
-                await this.sql`UPDATE employers SET logo = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
-            } else if (field === "banner") {
-                await this.sql`UPDATE employers SET banner = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "brandname") {
+                await this.sql`UPDATE employers SET brandname = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "companylogo") {
+                await this.sql`UPDATE employers SET companylogo = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "companybanner") {
+                await this.sql`UPDATE employers SET companybanner = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             } else if (field === "industry") {
                 await this.sql`UPDATE employers SET industry = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "companytype") {
+                await this.sql`UPDATE employers SET companytype = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             } else if (field === "companysize") {
                 await this.sql`UPDATE employers SET companysize = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "foundedyear") {
+                await this.sql`UPDATE employers SET foundedyear = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             } else if (field === "website") {
                 await this.sql`UPDATE employers SET website = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             } else if (field === "city") {
@@ -75,8 +81,12 @@ class EmployerRepository {
                 await this.sql`UPDATE employers SET state = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             } else if (field === "country") {
                 await this.sql`UPDATE employers SET country = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
-            } else if (field === "description") {
-                await this.sql`UPDATE employers SET description = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "pincode") {
+                await this.sql`UPDATE employers SET pincode = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "location") {
+                await this.sql`UPDATE employers SET location = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
+            } else if (field === "ispublic") {
+                await this.sql`UPDATE employers SET ispublic = ${processedValue}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ${userId}`;
             }
         }
 

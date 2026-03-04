@@ -12,7 +12,7 @@ interface NavItem {
   badge?: number;
 }
 
-const navItems: NavItem[] = [
+const candidateNavItems: NavItem[] = [
   { icon: "home", label: "Home", href: "/candidate" },
   { icon: "dashboard", label: "Dashboard", href: "/candidate/dashboard" },
   { icon: "mail", label: "Messages", href: "/candidate/messages", badge: 4 },
@@ -20,6 +20,16 @@ const navItems: NavItem[] = [
   { icon: "business", label: "Companies", href: "/candidate/companies" },
   { icon: "work", label: "Jobs", href: "/candidate/jobs" },
   { icon: "person", label: "Profile", href: "/candidate/profile" },
+];
+
+const employerNavItems: NavItem[] = [
+  { icon: "home", label: "Home", href: "/employer" },
+  { icon: "mail", label: "Messages", href: "/employer/messages" },
+  { icon: "person", label: "Profile", href: "/employer/profile" },
+  { icon: "dashboard", label: "Dashboard", href: "/employer/dashboard" },
+  { icon: "description", label: "Applications", href: "/employer/applications" },
+  { icon: "group", label: "Connections", href: "/employer/connections" },
+  { icon: "business", label: "Companies", href: "/employer/companies" },
 ];
 
 interface User {
@@ -41,20 +51,28 @@ export default function Sidebar({ userName, userImage, user, onLogout }: Sidebar
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const defaultImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuC38Jg-Q0OOhOOQN96b3xn72SWWysBb9KtKnKs3mdA9LOQmmUAAS0p0G18S2x3EQWxSg4C2lW2pzgCLzKMutQ4-Z9V1m90gIv2-Gs7hN5t5unLzYABo3W_1ciu7bPW95kvkSfjw97qfhPPRydckGW4yIGKyvOyQ_yhI1SC2LH9PdOwhoBD4FDOGL8h4hrWGhpLnzSELtOL3NapOMXYuS4OVXFK_5I-y9sfgRhUDhaG4z2CrbUIWVCIcercZaRmiK6nEWRTwOvIxD0U";
 
+  // Select navigation items based on user type
+  const navItems = user?.userType === "employer" ? employerNavItems : candidateNavItems;
+
   useEffect(() => {
     // Fetch profile image if user object is provided
     if (user?.id && !userImage) {
-      fetchProfileImage(user.id);
+      fetchProfileImage(user.id, user.userType);
     }
-  }, [user?.id, userImage]);
+  }, [user?.id, user?.userType, userImage]);
 
-  const fetchProfileImage = async (userId: number) => {
+  const fetchProfileImage = async (userId: number, userType: "candidate" | "employer") => {
     try {
-      const response = await fetch(`http://localhost:5000/api/candidates/${userId}`);
+      const endpoint = userType === "employer" 
+        ? `http://localhost:5000/api/employers/${userId}`
+        : `http://localhost:5000/api/candidates/${userId}`;
+      
+      const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();
-        if (data.data?.profileimage) {
-          setProfileImage(data.data.profileimage);
+        const imageField = userType === "employer" ? "companylogo" : "profileimage";
+        if (data.data?.[imageField]) {
+          setProfileImage(data.data[imageField]);
         }
       }
     } catch (error) {
@@ -64,6 +82,9 @@ export default function Sidebar({ userName, userImage, user, onLogout }: Sidebar
 
   const displayName = userName || user?.fullName || "User";
   const displayImage = userImage || profileImage || defaultImage;
+  const welcomeMessage = user?.userType === "employer" 
+    ? "Discover top talent today!"
+    : "Your job is waiting for you!";
 
   return (
     <aside className="w-[280px] bg-[#252525] flex flex-col items-center py-10 text-white shrink-0">
@@ -76,7 +97,7 @@ export default function Sidebar({ userName, userImage, user, onLogout }: Sidebar
           />
         </div>
         <h2 className="text-xl font-bold">Hi, {displayName.split(' ')[0]}!</h2>
-        <p className="text-xs text-gray-400 mt-1">Your job is waiting for you!</p>
+        <p className="text-xs text-gray-400 mt-1">{welcomeMessage}</p>
       </div>
 
       <nav className="flex-1 w-full px-6 space-y-2">

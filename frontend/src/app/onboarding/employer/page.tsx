@@ -148,8 +148,17 @@ export default function EmployerOnboarding() {
                 </div>
 
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="button" onClick={()=>{/* cancel */}} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5">Cancel</button>
-                  <button type="submit" className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(246,195,204,0.2)]">{saving ? 'Saving...' : 'Save & Continue'}</button>
+                  <button type="button" onClick={()=>{/* cancel */}} disabled={saving} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed">Cancel</button>
+                  <button type="submit" disabled={saving} className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(246,195,204,0.2)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2">
+                    {saving ? (
+                      <>
+                        <div className="size-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <span>Save & Continue</span>
+                    )}
+                  </button>
                 </div>
               </form>
             )}
@@ -163,8 +172,8 @@ export default function EmployerOnboarding() {
                 <input value={data.hiringNeeds ?? ''} onChange={(e)=>update({hiringNeeds: e.target.value})} className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-pink/50 text-white rounded-2xl px-5 py-4 text-sm" placeholder="e.g. 2 frontend engineers, 1 product designer" />
 
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="button" onClick={back} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5">Back</button>
-                  <button type="submit" className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide">Save & Continue</button>
+                  <button type="button" onClick={back} disabled={saving} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+                  <button type="submit" disabled={saving} className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">Save & Continue</button>
                 </div>
               </form>
             )}
@@ -178,8 +187,8 @@ export default function EmployerOnboarding() {
                 <input className="w-full bg-input-bg border-none focus:ring-2 focus:ring-accent-pink/50 text-white rounded-2xl px-5 py-4 text-sm" placeholder="e.g. Weekdays 9AM-5PM" />
 
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="button" onClick={back} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5">Back</button>
-                  <button type="submit" className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide">Save & Continue</button>
+                  <button type="button" onClick={back} disabled={saving} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+                  <button type="submit" disabled={saving} className="flex-[2] bg-white text-black font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">Save & Continue</button>
                 </div>
               </form>
             )}
@@ -193,8 +202,17 @@ export default function EmployerOnboarding() {
                 <pre className="bg-input-bg p-4 rounded-lg text-xs text-white overflow-auto">{JSON.stringify(data, null, 2)}</pre>
 
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="button" onClick={back} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5">Back</button>
-                  <button onClick={handleFinish} className="flex-[2] bg-accent-pink text-black font-extrabold py-4 rounded-2xl hover:brightness-105 transition-all text-sm uppercase tracking-wide">{saving ? 'Submitting...' : 'Finish & Publish'}</button>
+                  <button type="button" onClick={back} disabled={saving} className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+                  <button onClick={handleFinish} disabled={saving} className="flex-[2] bg-accent-pink text-black font-extrabold py-4 rounded-2xl hover:brightness-105 transition-all text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    {saving ? (
+                      <>
+                        <div className="size-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <span>Finish & Publish</span>
+                    )}
+                  </button>
                 </div>
               </div>
             )}

@@ -14,6 +14,8 @@ interface User {
 export default function EmployerOnboarding() {
     const [step, setStep] = useState(1);
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
     const router = useRouter();
     const hasChecked = useRef(false);
 
@@ -59,24 +61,49 @@ export default function EmployerOnboarding() {
                 return;
             }
             setUser(userData);
+            setInitialLoading(false);
         } catch {
             router.push("/login");
         }
     }, [router]);
 
     const handleNext = async () => {
+        setLoading(true);
+        
         // Save at every step
         await saveStepProfile();
 
         if (step < 3) {
             setStep(step + 1);
+            setLoading(false);
         } else {
-            handleComplete();
+            await handleComplete();
         }
     };
 
     const handleBack = () => {
         if (step > 1) setStep(step - 1);
+    };
+
+    const uploadToCloudinary = async (base64String: string, folder: string) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/upload/image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    base64String, 
+                    folder 
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                return result.data.url;
+            }
+        } catch (error) {
+            console.error('Cloudinary upload error:', error);
+        }
+        return null;
     };
 
     const saveStepProfile = async () => {
@@ -89,8 +116,18 @@ export default function EmployerOnboarding() {
                 profileData.companyname = formData.legalName;
                 profileData.brandname = formData.brandName;
                 profileData.industry = formData.industry;
-                profileData.companylogo = formData.logo;
-                profileData.companybanner = formData.banner;
+                
+                // Upload logo to Cloudinary if exists
+                if (formData.logo) {
+                    const logoUrl = await uploadToCloudinary(formData.logo, 'employer-logos');
+                    profileData.companylogo = logoUrl;
+                }
+                
+                // Upload banner to Cloudinary if exists
+                if (formData.banner) {
+                    const bannerUrl = await uploadToCloudinary(formData.banner, 'employer-banners');
+                    profileData.companybanner = bannerUrl;
+                }
             } else if (step === 2) {
                 profileData.companytype = formData.companyType;
                 profileData.companysize = formData.companySize;
@@ -166,10 +203,21 @@ export default function EmployerOnboarding() {
             }
         } catch (error) {
             console.error("Failed to complete onboarding:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (!user) return null;
+    if (initialLoading || !user) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-black">
+                <div className="text-center">
+                    <div className="inline-block size-16 border-4 border-white/10 border-t-white rounded-full animate-spin mb-4"></div>
+                    <p className="text-white/60 text-sm font-medium">Loading your workspace...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-black p-6 font-display">
@@ -487,23 +535,33 @@ export default function EmployerOnboarding() {
                             {step > 1 ? (
                                 <button
                                     onClick={handleBack}
-                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5"
+                                    disabled={loading}
+                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Back
                                 </button>
                             ) : (
                                 <button
                                     onClick={() => router.push("/login")}
-                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5"
+                                    disabled={loading}
+                                    className="flex-1 bg-white/5 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all text-sm uppercase tracking-wide border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Cancel
                                 </button>
                             )}
                             <button
                                 onClick={handleNext}
-                                className={`flex-[2] ${step === 1 ? 'bg-white text-black' : 'bg-white text-black'} font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)]`}
+                                disabled={loading}
+                                className={`flex-[2] ${step === 1 ? 'bg-white text-black' : 'bg-white text-black'} font-extrabold py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2`}
                             >
-                                {step === 3 ? "Complete Business Profile" : "Save & Continue"}
+                                {loading ? (
+                                    <>
+                                        <div className="size-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                                        <span>Saving...</span>
+                                    </>
+                                ) : (
+                                    <span>{step === 3 ? "Complete Business Profile" : "Save & Continue"}</span>
+                                )}
                             </button>
                         </div>
 
